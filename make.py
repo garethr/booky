@@ -4,8 +4,10 @@
 
 # TODO: logging
 # TODO: tests
-# TODO: help information
 # TODO: html template to include header and footer
+# TODO: pylint
+# TODO: file exceptions
+# TODO: per function import exceptions
 
 import os
 import sys
@@ -13,7 +15,14 @@ import getopt
 from tempfile import NamedTemporaryFile
 
 def usage():
-    print "help info"
+    print """Build tool for books. Takes files from a source directory and 
+generates output in the build directory.
+
+-o, --output [format]      supports html or pdf, defaults to html
+-p, --processor [engine]   supports textile or markdown, defaults to textile
+-c, --clean                removes all files from the build directory
+-h, --help                 display this help message
+"""
 
 def clean():
     file_list = os.listdir(os.path.join(os.path.abspath(
@@ -42,10 +51,30 @@ def load_code(content):
     return output
     
 def generate_html(content):
+    from BeautifulSoup import BeautifulSoup
     # create file containing contents in build 
-    fp = open("build/output.html", 'w')
+    output = open("build/output.html", 'w')
+    styles = open("source/css/html.css", 'r')
+    soup = BeautifulSoup(content)
+    try:
+        title = soup.h1.string
+    except AttributeError:
+        title = ""
+    header = """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>%s</title>
+    <style type="text/css" media="screen">
+    %s
+    </style>
+</head>
+<body>
+    """ % (title, styles.read())
+    footer = "</body></html>"
     # write contents to file
-    fp.write(content)
+    output.write("%s%s%s" % (header, content.replace("<pdf:nextpage />", ""), footer))
     return content
     
 def generate_pdf(content):
@@ -117,7 +146,10 @@ def main(argv):
         sys.exit(2)
 
     # set default output to html
-    output = "html"        
+    output = "html"   
+    # set the default processor to textile
+    processor = "textile"
+         
     for opt, arg in opts:
         if opt in ("-h", "--help"):      
             usage()
@@ -131,11 +163,23 @@ def main(argv):
             else:
                 usage()
                 sys.exit()
+                
+        # we only get here if we have a valid output
+        if opt in ("-p", "--processor"): 
+            if arg in ["textile", "markdown"]:
+                processor = arg
+            else:
+                usage()
+                sys.exit()
 
     # instantiate the builder
     builder = Builder()
     
-    builder.register(from_textile)
+    if processor == "markdown":
+        builder.register(from_markdown)
+    else:
+        builder.register(from_textile)
+        
     builder.register(load_code)
     
     # check if we need to generate a pdf
