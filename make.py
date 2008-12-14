@@ -4,7 +4,6 @@
 
 # TODO: logging
 # TODO: tests
-# TODO: html template to include header and footer
 # TODO: pylint
 # TODO: file exceptions
 # TODO: per function import exceptions
@@ -18,8 +17,8 @@ def usage():
     print """Build tool for books. Takes files from a source directory and 
 generates output in the build directory.
 
--o, --output [format]      supports html or pdf, defaults to html
--p, --processor [engine]   supports textile or markdown, defaults to textile
+-o, --output [format]      supports html (default), txt or pdf
+-p, --processor [engine]   supports textile (default), markdown or none
 -c, --clean                removes all files from the build directory
 -h, --help                 display this help message
 """
@@ -76,6 +75,11 @@ def generate_html(content):
     # write contents to file
     output.write("%s%s%s" % (header, content.replace("<pdf:nextpage />", ""), footer))
     return content
+
+def generate_txt(content):
+    output = open("build/output.txt", 'w')
+    output.write(content.replace("<pdf:nextpage />", ""))
+    return content
     
 def generate_pdf(content):
     import ho.pisa as pisa
@@ -87,60 +91,49 @@ def generate_pdf(content):
     pdf = pisa.CreatePDF(content, file(filename, "wb"), default_css=css.read())
     return content
 
+def buffer(content):
+    # get a list of all files in source
+    file_list = os.listdir(os.path.join(os.path.abspath(
+        os.path.dirname(os.path.realpath(__file__))), 'source'))
+    # get contents of all files in source
+    # and add all contents together into one string
+    content = ""
+    for individual_file in file_list: 
+        file_path = "source/%s" % individual_file
+        if os.path.isfile(file_path):
+            fp = open(file_path, 'r')
+            # add a line break between files
+            content = content + fp.read() + "\n"
+    return content
+
 class Builder:
     
     def __init__(self):
-        self.callbacks = {}
+        self.callbacks = []
+        self.content = ""
     
-    def register(self, callback, **kwargs):
+    def register(self, callback):
         """Registers a callback into the callback queue"""
-
         if callback not in self.callbacks:
-            self.callbacks[callback] = kwargs
+            self.callbacks.append(callback)
             return True
         else:
             return False, "A callback called '%s' has already been "\
                 "registered" % callback
 
-    def unregister(self, callback, type_):
-        """Un-registers a callback into the callback queue"""
-
-        if callback in self.callbacks:
-            del self.callbacks[callback]
-            return True
-        else:
-            return False, "No callback called '%s' is present in the queue" % \
-                callback
-
     def get_callbacks(self):
         """Returns the callbacks dict"""
         return self.callbacks
         
-    def buffer(self):
-        # get a list of all files in source
-        file_list = os.listdir(os.path.join(os.path.abspath(
-            os.path.dirname(os.path.realpath(__file__))), 'source'))
-        # get contents of all files in source
-        # and add all contents together into one string
-        content = ""
-        for individual_file in file_list: 
-            file_path = "source/%s" % individual_file
-            if os.path.isfile(file_path):
-                fp = open(file_path, 'r')
-                # add a line break between files
-                content = content + fp.read() + "\n"
-        return content
-        
     def run(self):
-        content = self.buffer()
         for callback in self.callbacks:
-            content = callback(content)
+            self.content = callback(self.content)
 
 def main(argv):
     "Build routine for compiling multiple text files into a pdf or html file"
 
     try:
-        opts, args = getopt.getopt(argv, "ho:c", ["help", "output=", "clean"]) 
+        opts, args = getopt.getopt(argv, "ho:p:c", ["help", "output=", "processor=", "clean"]) 
     except getopt.GetoptError:           
         usage()                          
         sys.exit(2)
@@ -158,7 +151,7 @@ def main(argv):
             clean()
             sys.exit()
         elif opt in ("-o", "--output"): 
-            if arg in ["html", "pdf"]:
+            if arg in ["html", "pdf", "txt"]:
                 output = arg
             else:
                 usage()
@@ -166,7 +159,7 @@ def main(argv):
                 
         # we only get here if we have a valid output
         if opt in ("-p", "--processor"): 
-            if arg in ["textile", "markdown"]:
+            if arg in ["textile", "markdown", "none"]:
                 processor = arg
             else:
                 usage()
@@ -175,8 +168,12 @@ def main(argv):
     # instantiate the builder
     builder = Builder()
     
+    builder.register(buffer)
+    
     if processor == "markdown":
         builder.register(from_markdown)
+    elif processor == "none":
+        pass
     else:
         builder.register(from_textile)
         
@@ -185,6 +182,8 @@ def main(argv):
     # check if we need to generate a pdf
     if output == "pdf":
         builder.register(generate_pdf)
+    elif output == "txt":
+        builder.register(generate_txt)
     # alternatively generate html
     else:
         builder.register(generate_html)
