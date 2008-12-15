@@ -1,16 +1,4 @@
-#!/usr/bin/env python
-
-"Make file for book project"
-
-# TODO: logging
-# TODO: tests
-# TODO: pylint
-# TODO: file exceptions
-# TODO: per function import exceptions
-
 import os
-import sys
-import getopt
 from tempfile import NamedTemporaryFile
 
 def usage():
@@ -18,14 +6,14 @@ def usage():
 generates output in the build directory.
 
 -o, --output [format]      supports html (default), txt or pdf
--p, --processor [engine]   supports textile (default), markdown or none
+-p, --processor [from]     supports textile (default), markdown or none
 -c, --clean                removes all files from the build directory
 -h, --help                 display this help message
 """
 
 def clean():
     file_list = os.listdir(os.path.join(os.path.abspath(
-        os.path.dirname(os.path.realpath(__file__))), 'build'))
+        os.path.dirname(os.path.realpath(__file__))), '../build'))
     for individual_file in file_list: 
         file_path = "build/%s" % individual_file
         if os.path.isfile(file_path):
@@ -91,10 +79,10 @@ def generate_pdf(content):
     pdf = pisa.CreatePDF(content, file(filename, "wb"), default_css=css.read())
     return content
 
-def buffer(content):
+def content_buffer(content):
     # get a list of all files in source
     file_list = os.listdir(os.path.join(os.path.abspath(
-        os.path.dirname(os.path.realpath(__file__))), 'source'))
+        os.path.dirname(os.path.realpath(__file__))), '../source'))
     # get contents of all files in source
     # and add all contents together into one string
     content = ""
@@ -105,91 +93,3 @@ def buffer(content):
             # add a line break between files
             content = content + fp.read() + "\n"
     return content
-
-class Builder:
-    
-    def __init__(self):
-        self.callbacks = []
-        self.content = ""
-    
-    def register(self, callback):
-        """Registers a callback into the callback queue"""
-        if callback not in self.callbacks:
-            self.callbacks.append(callback)
-            return True
-        else:
-            return False, "A callback called '%s' has already been "\
-                "registered" % callback
-
-    def get_callbacks(self):
-        """Returns the callbacks dict"""
-        return self.callbacks
-        
-    def run(self):
-        for callback in self.callbacks:
-            self.content = callback(self.content)
-
-def main(argv):
-    "Build routine for compiling multiple text files into a pdf or html file"
-
-    try:
-        opts, args = getopt.getopt(argv, "ho:p:c", ["help", "output=", "processor=", "clean"]) 
-    except getopt.GetoptError:           
-        usage()                          
-        sys.exit(2)
-
-    # set default output to html
-    output = "html"   
-    # set the default processor to textile
-    processor = "textile"
-         
-    for opt, arg in opts:
-        if opt in ("-h", "--help"):      
-            usage()
-            sys.exit()
-        elif opt in ("-c", "--clean"):      
-            clean()
-            sys.exit()
-        elif opt in ("-o", "--output"): 
-            if arg in ["html", "pdf", "txt"]:
-                output = arg
-            else:
-                usage()
-                sys.exit()
-                
-        # we only get here if we have a valid output
-        if opt in ("-p", "--processor"): 
-            if arg in ["textile", "markdown", "none"]:
-                processor = arg
-            else:
-                usage()
-                sys.exit()
-
-    # instantiate the builder
-    builder = Builder()
-    
-    builder.register(buffer)
-    
-    if processor == "markdown":
-        builder.register(from_markdown)
-    elif processor == "none":
-        pass
-    else:
-        builder.register(from_textile)
-        
-    builder.register(load_code)
-    
-    # check if we need to generate a pdf
-    if output == "pdf":
-        builder.register(generate_pdf)
-    elif output == "txt":
-        builder.register(generate_txt)
-    # alternatively generate html
-    else:
-        builder.register(generate_html)
-
-    # run any registered callbacks
-    builder.run()
-
-if __name__ == '__main__':
-    main(sys.argv[1:])
