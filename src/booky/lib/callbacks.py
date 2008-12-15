@@ -2,8 +2,8 @@ import os
 from tempfile import NamedTemporaryFile
 
 def usage():
-    print """Build tool for books. Takes files from a source directory and 
-generates output in the build directory.
+    print """Booky. Build tool for books. Takes files from a source directory and 
+generates output in the build directory in different formats.
 
 -o, --output [format]      supports html (default), txt or pdf
 -p, --processor [from]     supports textile (default), markdown or none

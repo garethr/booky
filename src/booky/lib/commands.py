@@ -1,8 +1,8 @@
 import sys
 import getopt
 
-from lib.builder import Builder
-from lib.callbacks import usage, clean, from_textile, from_markdown, \
+from booky.lib.builder import Builder
+from booky.lib.callbacks import usage, clean, from_textile, from_markdown, \
     load_code, generate_html, generate_txt, generate_pdf, content_buffer
 
 def main(argv):
