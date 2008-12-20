@@ -3,3 +3,4 @@
 example/*
 build/*
 *.egg-info
+src/booky/settings.py

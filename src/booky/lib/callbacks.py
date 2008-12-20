@@ -79,6 +79,20 @@ def generate_pdf(content):
     pdf = pisa.CreatePDF(content, file(filename, "wb"), default_css=css.read())
     return content
 
+def upload_pdf_to_s3(content):
+    import S3
+    import mimetypes
+    from booky.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, \
+        BUCKET_NAME
+    
+    conn = S3.AWSAuthConnection(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+    filename = "output.pdf"  
+    filedata = open("build/%s" % filename, 'rb').read()
+    content_type = mimetypes.guess_type(filename)[0]
+    conn.put(BUCKET_NAME, filename, S3.S3Object(filedata), 
+        {'x-amz-acl': 'public-read', 'Content-Type': content_type})
+    return content
+
 def content_buffer(content):
     # get a list of all files in source
     file_list = os.listdir('source')

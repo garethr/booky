@@ -3,13 +3,15 @@ import getopt
 
 from booky.lib.builder import Builder
 from booky.lib.callbacks import usage, clean, from_textile, from_markdown, \
-    load_code, generate_html, generate_txt, generate_pdf, content_buffer
+    load_code, generate_html, generate_txt, generate_pdf, content_buffer, \
+    upload_pdf_to_s3
 
 def main(argv):
     "Build routine for compiling multiple text files into a pdf or html file"
 
     try:
-        opts, args = getopt.getopt(argv, "ho:p:c", ["help", "output=", "processor=", "clean"]) 
+        opts, args = getopt.getopt(argv, "ho:p:cu", 
+            ["help", "output=", "processor=", "clean", "upload"]) 
     except getopt.GetoptError:           
         usage()                          
         sys.exit(2)
@@ -18,6 +20,8 @@ def main(argv):
     output = "html"   
     # set the default processor to textile
     processor = "textile"
+    # set a default value for upload location
+    upload = None
          
     for opt, arg in opts:
         if opt in ("-h", "--help"):      
@@ -32,7 +36,10 @@ def main(argv):
             else:
                 usage()
                 sys.exit()
-                
+        
+        if opt in ("-u", "--upload"): 
+            upload = "s3"
+
         # we only get here if we have a valid output
         if opt in ("-p", "--processor"): 
             if arg in ["textile", "markdown", "none"]:
@@ -63,6 +70,9 @@ def main(argv):
     # alternatively generate html
     else:
         builder.register(generate_html)
+
+    if upload == "s3":
+        builder.register(upload_pdf_to_s3)
 
     # run any registered callbacks
     builder.run()
