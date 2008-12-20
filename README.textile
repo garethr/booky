@@ -1,0 +1,45 @@
+h2. Purpose
+
+Booky is a simple application that helps with writing a single work, probably about or at least containing code. The main purpose is to take a collection of html fragments and code snippets and to compile them together into a pdf or other document, hopefully running a test suite against the code at the same time.
+
+h2. Inspiration
+
+Their are a few pieces of software that already solve a subset or superset of this problem. They have the advantage of being finished and in active use, and the disadvantage of being more general in scope, and hence more complicated. Do have a look at the following as they might be a better fit for your needs:
+
+* Sphinx (http://sphinx.pocoo.org)
+* Vellum (https://launchpad.net/vellum/)
+* ReStructured Text (http://docutils.sourceforge.net/rst.html)
+
+h2. Requirements
+
+The following modules are required for all the callbacks to work. If you don't need the relevant functionality though everything should run without them.
+
+* Idiopidae (http://www.zedshaw.com/projects/idiopidae/)
+* Textile (http://pypi.python.org/pypi/textile)
+* Markdown (http://www.freewisdom.org/projects/python-markdown/)
+* S3 (http://developer.amazonwebservices.com/connect/entry.jspa?externalID=134&categoryID=47)
+* Pisa (http://www.htmltopdf.org/)
+
+Currently if you try something that requires a module you don't have you'll get a nasty error. I'll be fixing that soon.
+
+h2. Installation
+
+It's packaged with setuptools so as long as you have that installed you should be able to just run:
+
+<pre>python setup.py install</pre>
+
+If you're hacking on the software I'd recommend running it in development mode.
+
+<pre>python setup.py develop</pre>
+
+h2. Known Issues
+
+This software is currently still under development and if you want to use all of it requires a bit of jiggery pokery. 
+
+In order to use the S3 upload command you need to create a settings.py file in the booky directory and assign the following constants:
+
+<pre>AWS_ACCESS_KEY_ID = ''
+AWS_SECRET_ACCESS_KEY = ''
+BUCKET_NAME = ''</pre>
+
+This is definitely a hack and will go away as soon as I decide on the best solution.
