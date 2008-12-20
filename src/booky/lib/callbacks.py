@@ -10,6 +10,7 @@ generates output in the build directory in different formats.
 -p, --processor [from]     supports textile (default), markdown or none
 -c, --clean                removes all files from the build directory
 -h, --help                 display this help message
+-u, --upload               upload pdf to S3
 """
 
 def clean():
