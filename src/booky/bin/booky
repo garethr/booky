@@ -9,6 +9,9 @@
 # TODO: per function import exceptions
 # TODO: define builder exception
 # TODO: Pygments highlighting
+# TODO: generate build directory if doesn't exist 
+# TODO: upload finished files to s3
+# TODO: documentation
 
 import sys
 

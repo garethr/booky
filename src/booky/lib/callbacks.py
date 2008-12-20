@@ -1,3 +1,4 @@
+import sys
 import os
 from tempfile import NamedTemporaryFile
 
@@ -12,8 +13,7 @@ generates output in the build directory in different formats.
 """
 
 def clean():
-    file_list = os.listdir(os.path.join(os.path.abspath(
-        os.path.dirname(os.path.realpath(__file__))), '../build'))
+    file_list = os.listdir('build')
     for individual_file in file_list: 
         file_path = "build/%s" % individual_file
         if os.path.isfile(file_path):
@@ -81,14 +81,13 @@ def generate_pdf(content):
 
 def content_buffer(content):
     # get a list of all files in source
-    file_list = os.listdir(os.path.join(os.path.abspath(
-        os.path.dirname(os.path.realpath(__file__))), '../source'))
+    file_list = os.listdir('source')
     # get contents of all files in source
     # and add all contents together into one string
-    content = ""
+    content = ''
     for individual_file in file_list: 
         file_path = "source/%s" % individual_file
-        if os.path.isfile(file_path):
+        if os.path.isfile(file_path) and file_path[7] != '.':
             fp = open(file_path, 'r')
             # add a line break between files
             content = content + fp.read() + "\n"

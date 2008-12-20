@@ -6,4 +6,5 @@ setup(
     
     packages = find_packages('src'),
     package_dir = {'':'src'},
+    scripts = ['src/booky/bin/booky'],
 )
