@@ -1,3 +1,5 @@
+"Command line script for booky"
+
 import sys
 import getopt
 

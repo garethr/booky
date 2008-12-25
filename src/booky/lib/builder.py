@@ -1,3 +1,5 @@
+"Utility class for booky. Used to manage registration and loading of callbacks"
+
 class Builder:
     """
     A basic processing queue. Register a series of callback functions
