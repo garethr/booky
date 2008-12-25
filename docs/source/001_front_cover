@@ -1,0 +1,11 @@
+<pdf:nexttemplate name="basic">
+
+<div id="first">
+
+h1. Booky
+
+Build nice pdfs and web pages from separate text files
+
+</div>
+
+<pdf:nextpage />
