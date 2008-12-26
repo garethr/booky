@@ -1,6 +1,6 @@
 .DS_Store
 *.pyc
-example/*
+docs/build/*
 build/*
 *.egg-info
 src/booky/settings.py
