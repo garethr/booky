@@ -86,7 +86,6 @@ h1 {
     /*18px via YUI Fonts CSS foundation*/
     font-size:138.5%; 
     -pdf-outline-level: 0;
-    border-bottom: 1px solid #000;
 }
 
 h2 {
@@ -122,7 +121,7 @@ h6,
 p,
 pre,
 hr {
-    margin:1em 0;
+    margin:1.5em 0;
 }
 
 address,
