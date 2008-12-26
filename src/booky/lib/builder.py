@@ -1,5 +1,6 @@
 "Utility class for booky. Used to manage registration and loading of callbacks"
 
+### @export "Builder Class"
 class Builder:
     """
     A basic processing queue. Register a series of callback functions
@@ -30,3 +31,4 @@ class Builder:
         "Note no return value as all output is done via callbacks"
         for callback in self.callbacks:
             self.content = callback(self.content)
+### @end

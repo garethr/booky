@@ -1,5 +1,6 @@
 "Command line script for booky"
 
+import os
 import sys
 import getopt
 
@@ -52,6 +53,11 @@ def main(argv):
 
     # instantiate the builder
     builder = Builder()
+    
+    # check we have a build directory
+    # and create one if not
+    if not os.path.isdir("build"):
+        os.makedirs("build")
     
     builder.register(content_buffer)
     

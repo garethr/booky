@@ -2,12 +2,6 @@
 
 "Make file for book project"
 
-# TODO: logging
-# TODO: file exceptions
-# TODO: Pygments highlighting
-# TODO: generate build directory if doesn't exist 
-# TODO: documentation
-
 import sys
 
 from booky.lib.commands import main
