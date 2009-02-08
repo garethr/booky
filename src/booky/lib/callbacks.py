@@ -154,3 +154,17 @@ def content_buffer(content):
             # add a line break between files
             content = content + handle.read() + "\n"
     return content
+    
+def highlight_code(content):
+    from BeautifulSoup import BeautifulSoup
+    from pygments import formatters, lexers, highlight
+    soup = BeautifulSoup(content)
+    formatter = formatters.HtmlFormatter()
+    pre_blocks = soup.findAll('pre')
+    
+    for pre in pre_blocks:
+        if pre.has_key('class'):
+            lexer = lexers.get_lexer_by_name(pre['class'], stripall=True)
+            for code in pre:
+                code.replaceWith(highlight(code.string, lexer, formatter))
+    return unicode(soup)

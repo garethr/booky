@@ -17,10 +17,6 @@ class BuilderTest(unittest.TestCase):
     def test_builder_init(self):
         builder = Builder()
         self.assert_equal(builder.callbacks, [])
-
-    def test_builder_init(self):
-        builder = Builder()
-        self.assert_equal(builder.callbacks, [])
         self.assert_equal(builder.content, "")
 
     def test_builder_registration(self):

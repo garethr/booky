@@ -7,7 +7,7 @@ import getopt
 from booky.lib.builder import Builder
 from booky.lib.callbacks import usage, clean, from_textile, from_markdown, \
     load_code, generate_html, generate_txt, generate_pdf, content_buffer, \
-    upload_pdf_to_s3
+    upload_pdf_to_s3, highlight_code
 
 def main(argv):
     "Build routine for compiling multiple text files into a pdf or html file"
@@ -69,6 +69,8 @@ def main(argv):
         builder.register(from_textile)
         
     builder.register(load_code)
+    
+    builder.register(highlight_code)
     
     # check if we need to generate a pdf
     if output == "pdf":

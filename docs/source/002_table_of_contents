@@ -1,7 +1,0 @@
-<h1 class="no-outline">Table of Contents</h1>
-
-<div>
-    <pdf:toc />
-</div>
-
-<pdf:nextpage />
