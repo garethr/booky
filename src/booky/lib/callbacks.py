@@ -157,8 +157,12 @@ def content_buffer(content):
     
 def highlight_code(content):
     "Highlight code using pygments based on a class value of the pre element"
-    from BeautifulSoup import BeautifulSoup
-    from pygments import formatters, lexers, highlight
+    try:
+        from BeautifulSoup import BeautifulSoup
+        from pygments import formatters, lexers, highlight
+    except ImportError, error:
+        print "You don't appear to have Pygments or BeautifulSoup installed: %s" % error
+        sys.exit(1)        
     soup = BeautifulSoup(content)
     formatter = formatters.HtmlFormatter()
     pre_blocks = soup.findAll('pre')    
