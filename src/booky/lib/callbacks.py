@@ -156,15 +156,18 @@ def content_buffer(content):
     return content
     
 def highlight_code(content):
+    "Highlight code using pygments based on a class value of the pre element"
     from BeautifulSoup import BeautifulSoup
     from pygments import formatters, lexers, highlight
     soup = BeautifulSoup(content)
     formatter = formatters.HtmlFormatter()
-    pre_blocks = soup.findAll('pre')
-    
+    pre_blocks = soup.findAll('pre')    
     for pre in pre_blocks:
         if pre.has_key('class'):
-            lexer = lexers.get_lexer_by_name(pre['class'], stripall=True)
-            for code in pre:
-                code.replaceWith(highlight(code.string, lexer, formatter))
+            try:
+                lexer = lexers.get_lexer_by_name(pre['class'], stripall=True)
+                for code in pre:
+                    code.replaceWith(highlight(code.string, lexer, formatter))
+            except:
+                pass
     return unicode(soup)
