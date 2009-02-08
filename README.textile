@@ -20,6 +20,8 @@ Their are a few pieces of software that already solve a subset or superset of th
 * Sphinx (http://sphinx.pocoo.org)
 * Vellum (https://launchpad.net/vellum/)
 * ReStructured Text (http://docutils.sourceforge.net/rst.html)
+* CSS2XSLFO (http://www.re.be/css2xslfo/index.xhtml)
+* LaTeX (http://www.latex-project.org/)
 
 h2. Requirements
 
@@ -30,8 +32,10 @@ The following modules are required for all the callbacks to work. If you don't n
 * Markdown (http://www.freewisdom.org/projects/python-markdown/)
 * S3 (http://developer.amazonwebservices.com/connect/entry.jspa?externalID=134&categoryID=47)
 * Pisa (http://www.htmltopdf.org/)
+* BeautifulSoup (http://crummy.com/software/BeautifulSoup)
+* Pygments (http://pygments.org/)
 
-Currently if you try something that requires a module you don't have you'll get a nasty error. I'll be fixing that soon.
+Currently if you try something that requires a module you don't have you'll get a nice error.
 
 h2. Installation
 
@@ -45,7 +49,7 @@ If you're hacking on the software I'd recommend running it in development mode.
 
 h2. Known Issues
 
-This software is currently still under development and if you want to use all of it requires a bit of jiggery pokery. 
+This software is currently still under development and if you want to use all of the features it requires a bit of jiggery pokery. 
 
 In order to use the S3 upload command you need to create a settings.py file in the booky directory and assign the following constants:
 
