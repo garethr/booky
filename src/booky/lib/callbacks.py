@@ -12,7 +12,6 @@ def usage():
 -p, --processor [from]     supports textile (default), markdown or none
 -c, --clean                removes all files from the build directory
 -h, --help                 display this help message
--u, --upload               upload pdf to S3
 """
 
 def clean():
@@ -120,24 +119,6 @@ def generate_pdf(content):
         os.unlink(filename)
     css = open("source/css/pdf.css", "r")
     pisa.CreatePDF(content, file(filename, "wb"), default_css=css.read())
-    return content
-
-def upload_pdf_to_s3(content):
-    "Upload pdf to S3"
-    try:
-        import S3
-        import mimetypes
-        from booky.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, \
-            BUCKET_NAME
-    except ImportError, error:
-        print "You don't appear to have S3 module installed: %s" % error
-        sys.exit(1)    
-    conn = S3.AWSAuthConnection(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
-    filename = "output.pdf"  
-    filedata = open("build/%s" % filename, 'rb').read()
-    content_type = mimetypes.guess_type(filename)[0]
-    conn.put(BUCKET_NAME, filename, S3.S3Object(filedata), 
-        {'x-amz-acl': 'public-read', 'Content-Type': content_type})
     return content
 
 def content_buffer(content):

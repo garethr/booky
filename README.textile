@@ -10,8 +10,7 @@ and generates output in the build directory in different formats.
 <pre>-o, --output [format]      supports html (default), txt or pdf
 -p, --processor [from]     supports textile (default), markdown or none
 -c, --clean                removes all files from the build directory
--h, --help                 display this help message
--u, --upload               upload pdf to S3</pre>
+-h, --help                 display this help message</pre>
 
 h2. Inspiration
 
@@ -30,7 +29,6 @@ The following modules are required for all the callbacks to work. If you don't n
 * Idiopidae (http://www.zedshaw.com/projects/idiopidae/)
 * Textile (http://pypi.python.org/pypi/textile)
 * Markdown (http://www.freewisdom.org/projects/python-markdown/)
-* S3 (http://developer.amazonwebservices.com/connect/entry.jspa?externalID=134&categoryID=47)
 * Pisa (http://www.htmltopdf.org/)
 * BeautifulSoup (http://crummy.com/software/BeautifulSoup)
 * Pygments (http://pygments.org/)
@@ -46,15 +44,3 @@ It's packaged with setuptools so as long as you have that installed you should b
 If you're hacking on the software I'd recommend running it in development mode.
 
 <pre>python setup.py develop</pre>
-
-h2. Known Issues
-
-This software is currently still under development and if you want to use all of the features it requires a bit of jiggery pokery. 
-
-In order to use the S3 upload command you need to create a settings.py file in the booky directory and assign the following constants:
-
-<pre>AWS_ACCESS_KEY_ID = ''
-AWS_SECRET_ACCESS_KEY = ''
-BUCKET_NAME = ''</pre>
-
-This is definitely a hack and will go away as soon as I decide on the best solution.
